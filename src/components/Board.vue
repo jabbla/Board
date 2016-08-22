@@ -1,8 +1,8 @@
 <template>
-  <div id="board" :class="classObject" style="background-color: {{ background || 'transparent' }}; color: {{ color||'black' }}">
+  <div id="board" :class="classObject" v-bind:style="{backgroundColor: background||'transparent', color:color||'black'} ">
     <table class="board">
       <tr v-for="(index , row) in Board.board" track-by="$index">
-        <td style="width: {{ size || '60px' }};height: {{ size || '60px' }};border: {{ border || '3px solid black;' }}" v-for="(index2 , item) in row" @mouseout="mouseout()" :class="{ 'noinitial': item.noinitial }" @click="click(index,index2)" track-by="$index">{{item.value}}</td>
+        <td v-bind:style="{width: size||'60px',height: size||'60px',border: border||'3px solid black'}" v-for="(index2 , item) in row" @mouseout="mouseout()" :class="{ 'noinitial': item.noinitial }" @click="click(index,index2)" track-by="$index">{{item.value}}</td>
       </tr>
     </table>
   </div>
@@ -131,8 +131,11 @@ export default {
       let row = inputState.row;
       let col = inputState.col;
 
-      let oTd = document.querySelector('.board').querySelectorAll('tr')[row].querySelectorAll('td')[col];
+      let oTr = document.querySelector('.board').querySelectorAll('tr')[row];
 
+      if(!oTr) return;
+
+      let oTd = oTr.querySelectorAll('td')[col];
       oTd.classList.remove('focus');
       //关闭输入状态，还原位置
       inputState.bool = false;
