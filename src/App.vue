@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <board size="50px" :Board="test" position="center"></board>
+    <board size="50px" :Board.sync="test" position="center"></board>
   </div>
 </template>
 

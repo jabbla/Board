@@ -2,7 +2,7 @@
   <div id="board" :class="classObject" v-bind:style="{backgroundColor: background||'transparent', color:color||'black'} ">
     <table class="board">
       <tr v-for="(index , row) in Board.board" track-by="$index">
-        <td v-bind:style="{width: size||'60px',height: size||'60px',border: border||'3px solid black'}" v-for="(index2 , item) in row" @mouseout="mouseout()" :class="{ 'noinitial': item.noinitial }" @click="click(index,index2)" track-by="$index">{{item.value}}</td>
+        <td v-bind:style="{width: size,height: size,border: border}" v-for="(index2 , item) in row" @mouseout="mouseout()" :class="{ 'noinitial': item.noinitial }" @click="click(index,index2)" track-by="$index">{{item.value}}</td>
       </tr>
     </table>
   </div>
@@ -58,10 +58,12 @@ function Array_81(arr){
 ///keyup事件控制器
 function Keyup(e){
   if(!inputState.bool) return;
-  let row = inputState.row;
-  let col = inputState.col;
-  let key = e.keyCode===46? '' : e.keyCode-48;
-  let noinitial = this.Board.board[row][col].noinitial;
+
+  const row = inputState.row,
+        col = inputState.col,
+        noinitial = this.Board.board[row][col].noinitial,
+        key = e.keyCode===46? '' : e.keyCode-48;
+   
 
   this.Board.board[row].splice(col,1,{noinitial:noinitial,value:key});
 }
@@ -112,7 +114,7 @@ export default {
     click(row,col){
       if(!this.Board.board[row][col].noinitial) return;
       /*hide_input切换focus状态*/
-      let hide_input = document.querySelector('.hide_input');
+      const hide_input = document.querySelector('.hide_input');
       hide_input.focus();
       //开启输入状态，记录位置
       inputState.bool = true;
@@ -120,29 +122,22 @@ export default {
       inputState.col = col;
 
       //添加表格样式 .focus
-      let oTd = document.querySelector('.board').querySelectorAll('tr')[row].querySelectorAll('td')[col];
+      const oTd = document.querySelector('.board').querySelectorAll('tr')[row].querySelectorAll('td')[col];
 
       oTd.classList.add('focus');
 
     },
     mouseout(){
-      
       //删除样式
-      let row = inputState.row;
-      let col = inputState.col;
-
-      let oTr = document.querySelector('.board').querySelectorAll('tr')[row];
-
+      const {row,col} = inputState;
+      const oTr = document.querySelector('.board').querySelectorAll('tr')[row];
       if(!oTr) return;
-
-      let oTd = oTr.querySelectorAll('td')[col];
+      const oTd = oTr.querySelectorAll('td')[col];
       oTd.classList.remove('focus');
       //关闭输入状态，还原位置
       inputState.bool = false;
       inputState.row = -1;
       inputState.col = -1;
-      
-
     }
   },
   events: {
@@ -171,7 +166,35 @@ export default {
     /*为用户添加输入的位置*/
     addUser.call(this,this.add);
   },
-  props: ['Board','position','size','background','border','color','add'],
+  props: {
+    Board:{
+      type: Object,
+      twoWay: true
+    },
+    position:{
+      type: String,
+      default: '3px solid black'
+    },
+    size:{
+      type: String,
+      default: '60px'
+    },
+    background:{
+      type: String,
+      default: 'transparent'
+    },
+    border:{
+      type: String,
+      default: '3px solid black'
+    },
+    color:{
+      type: String,
+      default: 'black'
+    },
+    add:{
+      type: Object,
+    }
+  }
   
 }
 </script>
